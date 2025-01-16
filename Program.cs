@@ -1,25 +1,30 @@
+﻿using Microsoft.EntityFrameworkCore;
+using TicketingSystem.Data;
+using TicketingSystem.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// Adaugă serviciile la container.
+builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddDbContext<TicketingDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("TicketingDb")));
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+// Configurează Swagger/OpenAPI.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configurează pipeline-ul de request HTTP.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-//test
+
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
